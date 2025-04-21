@@ -18,44 +18,34 @@ struct Nodo
 typedef nodo *lista;
 lista crearNodo(lista *Lpendiente);
 void cargarTareas(lista *nuevo, int ID);
-int TareaPendienteRealizada(lista Lpendiente);
-
+void MostrarLista(lista *L);
+int TareaPendienteRealizada(lista *Lpendiente, lista *LRealizado);
+int longitud(lista L);
 int main()
 {
     lista Lpendiente = NULL;
     lista LRealizado = NULL;
     Lpendiente = crearNodo(&Lpendiente);
-    TareaPendienteRealizada(Lpendiente);
+    TareaPendienteRealizada(&Lpendiente, &LRealizado);
     return 0;
 }
 
 lista crearNodo(lista *Lpendiente)
 {
     int opcion;
-    lista nuevo = NULL;
+    nodo *nuevo;
     int ID = 1000;
     do
     {
         puts("1. Cargar Tarea a pendientes");
         puts("2. Salir");
         scanf("%d", &opcion);
-        nuevo = (lista *)malloc(sizeof(lista *));
-        lista aux;
         if (opcion == 1)
         {
-            if (Lpendiente == NULL)
-            {
-                cargarTareas(&nuevo, ID);
-                nuevo->Siguiente = NULL;
-            }else{
-                aux = nuevo->Siguiente;
-                Lpendiente = aux;
-                nuevo->Siguiente = NULL;
-                cargarTareas(&nuevo, ID);
-            }
-            
-           
-            nuevo->Siguiente = NULL;
+            nuevo = (nodo *)malloc(sizeof(nodo));
+            cargarTareas(&nuevo, ID);
+            nuevo->Siguiente = *Lpendiente;
+            *Lpendiente = nuevo;
             ID++;
         }
     } while (opcion == 1);
@@ -70,49 +60,64 @@ void cargarTareas(lista *nuevo, int ID)
     puts("Ingrese duración de la tarea (cant de dias)");
     scanf("%d", &dur);
     puts("Ingrese descripción de la tarea");
-    scanf("%s", &desc);
+    scanf("%s", desc);
     (*nuevo)->T.Descripcion = (char *)malloc((strlen(desc) + 1) * sizeof(char));
     strcpy((*nuevo)->T.Descripcion, desc);
     (*nuevo)->T.Duracion = dur;
-    (*nuevo)->T.TareaID;
+    (*nuevo)->T.TareaID = ID;
 }
 
-//  int longitud(lista L){
-//      if (L == NULL)
-//      {
-//          return 0;
-//      }
-//      int aux = 0;
-//      while (L != NULL)
-//      {
-//          aux++;
-//          L = L->Siguiente;
-//      }
-//      return aux;
-//  };
-
-int TareaPendienteRealizada(lista Lpendiente)
+int TareaPendienteRealizada(lista *Lpendiente, lista *LRealizado)
 {
-    if (Lpendiente == NULL)
+    if (*Lpendiente == NULL)
     {
         puts("No hay tareas pendientes a realizar");
         return 0;
     }
 
-    int opcion;
-    lista aux = Lpendiente;
-    while (opcion != 0)
+    int opcion = -1;
+    int i;
+    lista aux = *Lpendiente;
+    lista aux2;
+    do
     {
-        int i = 1;
-        puts("Porfavor, elija y escriba el número de tarea pendiente que fue realizada");
-        while (aux != NULL)
+         i = 1;
+        puts("Elija y escriba el número de tarea pendiente que fue realizada");
+        MostrarLista(&aux);
+        printf("\n0. Salir\n");
+        scanf("%d", &opcion);
+        for (int j = 1; j < opcion; j++)
         {
-            printf("%d. %s", i, aux->T.Descripcion);
-            i++;
             aux = aux->Siguiente;
         }
-        printf("0. Salir");
-        scanf("%d", &opcion);
-    }
+        
+    } while (opcion < longitud(aux));
     return 0;
 }
+
+void MostrarLista(lista *L){
+    int i=1;
+        
+        lista aux = *L;
+        while (aux != NULL)
+        {
+            printf("\n%d. %s", i, aux->T.Descripcion);
+            aux = aux->Siguiente;
+            
+        }
+}
+
+
+   int longitud(lista L){
+       if (L == NULL)
+       {
+           return 0;
+       }
+       int aux = 0;
+       while (L != NULL)
+       {
+           aux++;
+           L = (L)->Siguiente;
+       }
+       return aux;
+   };
