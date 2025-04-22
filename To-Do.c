@@ -19,14 +19,20 @@ typedef nodo *lista;
 lista crearNodo(lista *Lpendiente);
 void cargarTareas(lista *nuevo, int ID);
 void MostrarLista(lista *L);
+void MostrarPendReal(lista *L1, lista *L2);
 int TareaPendienteRealizada(lista *Lpendiente, lista *LRealizado);
 int longitud(lista L);
+void BuscarPorId(lista *Lpendiente, lista *LRealizado);
+
+
 int main()
 {
     lista Lpendiente = NULL;
     lista LRealizado = NULL;
     Lpendiente = crearNodo(&Lpendiente);
     TareaPendienteRealizada(&Lpendiente, &LRealizado);
+    MostrarPendReal(&Lpendiente, &LRealizado);
+    BuscarPorId(&Lpendiente, &LRealizado);
     return 0;
 }
 
@@ -69,55 +75,119 @@ void cargarTareas(lista *nuevo, int ID)
 
 int TareaPendienteRealizada(lista *Lpendiente, lista *LRealizado)
 {
-    if (*Lpendiente == NULL)
-    {
-        puts("No hay tareas pendientes a realizar");
-        return 0;
-    }
+   
 
     int opcion = -1;
-    int i;
-    lista aux = *Lpendiente;
-    lista aux2;
+
+    lista aux;
+    lista anterior;
+    anterior = NULL;
     do
     {
-         i = 1;
+        if (*Lpendiente == NULL)
+        {
+            puts("No hay tareas pendientes a realizar");
+            return 0;
+        }
+        aux = *Lpendiente;
         puts("Elija y escriba el número de tarea pendiente que fue realizada");
-        MostrarLista(&aux);
+        MostrarLista(Lpendiente);
         printf("\n0. Salir\n");
         scanf("%d", &opcion);
-        for (int j = 1; j < opcion; j++)
+
+        if (opcion > 0 && opcion <= longitud(*Lpendiente))
         {
-            aux = aux->Siguiente;
+            for (int i = 1; i < opcion; i++)
+            {
+                anterior = aux;
+                aux = aux->Siguiente;
+            }
+            if (anterior == NULL)
+            {
+                *Lpendiente = aux->Siguiente;
+            }
+            else
+            {
+                anterior->Siguiente = aux->Siguiente;
+            }
+            aux->Siguiente = *LRealizado;
+            *LRealizado = aux;
         }
-        
-    } while (opcion < longitud(aux));
+
+    } while (opcion != 0);
     return 0;
 }
 
-void MostrarLista(lista *L){
-    int i=1;
-        
-        lista aux = *L;
-        while (aux != NULL)
-        {
-            printf("\n%d. %s", i, aux->T.Descripcion);
-            aux = aux->Siguiente;
-            
-        }
+void MostrarLista(lista *L)
+{
+    int i = 1;
+
+    lista aux = *L;
+    while (aux != NULL)
+    {
+        printf("%d. %s\n", i, aux->T.Descripcion);
+        aux = aux->Siguiente;
+        i++;
+    }
 }
 
+int longitud(lista L)
+{
+    if (L == NULL)
+    {
+        return 0;
+    }
+    int aux = 0;
+    while (L != NULL)
+    {
+        aux++;
+        L = (L)->Siguiente;
+    }
+    return aux;
+};
 
-   int longitud(lista L){
-       if (L == NULL)
-       {
-           return 0;
-       }
-       int aux = 0;
-       while (L != NULL)
-       {
-           aux++;
-           L = (L)->Siguiente;
-       }
-       return aux;
-   };
+void MostrarPendReal(lista *L1, lista *L2){
+    puts("\n------Tareas pendientes-----");
+    MostrarLista(L1);
+    puts("\n------Tareas Realizadas-----");
+    MostrarLista(L2);
+}
+
+void BuscarPorId(lista *Lpendiente, lista *LRealizado){
+    int buscar, encontrado = 0, encontrado2 = 0;
+    
+    puts("Ingresar ID a buscar");
+    scanf("%d", &buscar);
+    lista aux = *Lpendiente;
+
+    if (aux != NULL)
+    {
+        while(aux != NULL){
+            if (aux->T.TareaID == buscar)
+            {
+                encontrado = 1;
+                printf("----Elemento encontrado----\n ID: %d\n Descripción: %s\n Duración: %d\n Estado: Pendiente\n", aux->T.TareaID, aux->T.Descripcion, aux->T.Duracion);
+                break;
+            }
+            aux = aux->Siguiente;
+        }
+    }
+    
+        aux = *LRealizado;
+    if (aux != NULL)
+    {
+        while(aux != NULL){
+            if (aux->T.TareaID == buscar)
+            {
+                encontrado = 1;
+                printf("----Elemento encontrado----\n ID: %d\n Descripción: %s\n Duración: %d\n Estado: Realizado\n", aux->T.TareaID, aux->T.Descripcion, aux->T.Duracion);
+                break;
+            }
+            aux = aux->Siguiente;
+        }
+    }
+    if(!encontrado){
+        printf("\nElemento NO ENCONTRADO");
+    }
+
+}
