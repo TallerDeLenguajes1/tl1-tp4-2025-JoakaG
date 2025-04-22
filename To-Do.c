@@ -25,8 +25,6 @@ int longitud(lista L);
 void BuscarPorId(lista *Lpendiente, lista *LRealizado);
 void BuscarPorClave(lista *Lpendiente, lista *LRealizado);
 void ElegirBuscador(lista *Lpendiente, lista *LRealizado);
-// 
-
 
 int main()
 {
@@ -199,7 +197,8 @@ void BuscarPorId(lista *Lpendiente, lista *LRealizado)
     }
 }
 
-void BuscarPorClave(lista *Lpendiente, lista *LRealizado){
+void BuscarPorClave(lista *Lpendiente, lista *LRealizado)
+{
     int encontrado = 0, encontrado2 = 0;
     char buscar[50];
     puts("\nIngresar Palabra clave a buscar");
@@ -240,25 +239,27 @@ void BuscarPorClave(lista *Lpendiente, lista *LRealizado){
     }
 }
 
-void ElegirBuscador(lista *Lpendiente, lista *LRealizado){
+void ElegirBuscador(lista *Lpendiente, lista *LRealizado)
+{
     int opcion;
     do
     {
         puts("Elegir como buscar elemento");
-    puts("1. Por ID (identificador Único)");
-    puts("2. Por Palabra Clave");
-    puts("3. Salir buscador");
-    scanf("%d", &opcion);
-    if (opcion == 1)
-    {
-        BuscarPorId(Lpendiente, LRealizado);
-    }else if(opcion == 2){
-        BuscarPorClave(Lpendiente, LRealizado);
-    }else{
-        puts("Cerrando buscador...");
-    }
+        puts("1. Por ID (identificador Único)");
+        puts("2. Por Palabra Clave");
+        puts("3. Salir buscador");
+        scanf("%d", &opcion);
+        if (opcion == 1)
+        {
+            BuscarPorId(Lpendiente, LRealizado);
+        }
+        else if (opcion == 2)
+        {
+            BuscarPorClave(Lpendiente, LRealizado);
+        }
+        else
+        {
+            puts("Cerrando buscador...");
+        }
     } while (opcion < 3);
-    
-    
-    
 }
