@@ -23,6 +23,9 @@ void MostrarPendReal(lista *L1, lista *L2);
 int TareaPendienteRealizada(lista *Lpendiente, lista *LRealizado);
 int longitud(lista L);
 void BuscarPorId(lista *Lpendiente, lista *LRealizado);
+void BuscarPorClave(lista *Lpendiente, lista *LRealizado);
+void ElegirBuscador(lista *Lpendiente, lista *LRealizado);
+// 
 
 
 int main()
@@ -32,7 +35,7 @@ int main()
     Lpendiente = crearNodo(&Lpendiente);
     TareaPendienteRealizada(&Lpendiente, &LRealizado);
     MostrarPendReal(&Lpendiente, &LRealizado);
-    BuscarPorId(&Lpendiente, &LRealizado);
+    ElegirBuscador(&Lpendiente, &LRealizado);
     return 0;
 }
 
@@ -66,7 +69,8 @@ void cargarTareas(lista *nuevo, int ID)
     puts("Ingrese duración de la tarea (cant de dias)");
     scanf("%d", &dur);
     puts("Ingrese descripción de la tarea");
-    scanf("%s", desc);
+    getchar();
+    gets(desc);
     (*nuevo)->T.Descripcion = (char *)malloc((strlen(desc) + 1) * sizeof(char));
     strcpy((*nuevo)->T.Descripcion, desc);
     (*nuevo)->T.Duracion = dur;
@@ -75,7 +79,6 @@ void cargarTareas(lista *nuevo, int ID)
 
 int TareaPendienteRealizada(lista *Lpendiente, lista *LRealizado)
 {
-   
 
     int opcion = -1;
 
@@ -146,23 +149,26 @@ int longitud(lista L)
     return aux;
 };
 
-void MostrarPendReal(lista *L1, lista *L2){
+void MostrarPendReal(lista *L1, lista *L2)
+{
     puts("\n------Tareas pendientes-----");
     MostrarLista(L1);
     puts("\n------Tareas Realizadas-----");
     MostrarLista(L2);
 }
 
-void BuscarPorId(lista *Lpendiente, lista *LRealizado){
+void BuscarPorId(lista *Lpendiente, lista *LRealizado)
+{
     int buscar, encontrado = 0, encontrado2 = 0;
-    
+
     puts("Ingresar ID a buscar");
     scanf("%d", &buscar);
     lista aux = *Lpendiente;
 
     if (aux != NULL)
     {
-        while(aux != NULL){
+        while (aux != NULL)
+        {
             if (aux->T.TareaID == buscar)
             {
                 encontrado = 1;
@@ -172,11 +178,12 @@ void BuscarPorId(lista *Lpendiente, lista *LRealizado){
             aux = aux->Siguiente;
         }
     }
-    
-        aux = *LRealizado;
+
+    aux = *LRealizado;
     if (aux != NULL)
     {
-        while(aux != NULL){
+        while (aux != NULL)
+        {
             if (aux->T.TareaID == buscar)
             {
                 encontrado = 1;
@@ -186,8 +193,72 @@ void BuscarPorId(lista *Lpendiente, lista *LRealizado){
             aux = aux->Siguiente;
         }
     }
-    if(!encontrado){
-        printf("\nElemento NO ENCONTRADO");
+    if (!encontrado)
+    {
+        printf("\n--Elemento NO ENCONTRADO--\n");
+    }
+}
+
+void BuscarPorClave(lista *Lpendiente, lista *LRealizado){
+    int encontrado = 0, encontrado2 = 0;
+    char buscar[50];
+    puts("\nIngresar Palabra clave a buscar");
+    scanf("%s", buscar);
+    lista aux = *Lpendiente;
+
+    if (aux != NULL)
+    {
+        while (aux != NULL)
+        {
+            if (strstr(aux->T.Descripcion, buscar) != NULL)
+            {
+                encontrado = 1;
+                printf("----Elemento encontrado----\n ID: %d\n Descripción: %s\n Duración: %d\n Estado: Pendiente\n", aux->T.TareaID, aux->T.Descripcion, aux->T.Duracion);
+                break;
+            }
+            aux = aux->Siguiente;
+        }
     }
 
+    aux = *LRealizado;
+    if (aux != NULL)
+    {
+        while (aux != NULL)
+        {
+            if (strstr(aux->T.Descripcion, buscar) != NULL)
+            {
+                encontrado = 1;
+                printf("----Elemento encontrado----\n ID: %d\n Descripción: %s\n Duración: %d\n Estado: Realizado\n", aux->T.TareaID, aux->T.Descripcion, aux->T.Duracion);
+                break;
+            }
+            aux = aux->Siguiente;
+        }
+    }
+    if (!encontrado)
+    {
+        printf("\n--Elemento NO ENCONTRADO--\n");
+    }
+}
+
+void ElegirBuscador(lista *Lpendiente, lista *LRealizado){
+    int opcion;
+    do
+    {
+        puts("Elegir como buscar elemento");
+    puts("1. Por ID (identificador Único)");
+    puts("2. Por Palabra Clave");
+    puts("3. Salir buscador");
+    scanf("%d", &opcion);
+    if (opcion == 1)
+    {
+        BuscarPorId(Lpendiente, LRealizado);
+    }else if(opcion == 2){
+        BuscarPorClave(Lpendiente, LRealizado);
+    }else{
+        puts("Cerrando buscador...");
+    }
+    } while (opcion < 3);
+    
+    
+    
 }
